@@ -6,24 +6,25 @@ const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-    res.send("Server běží správně!"); // Odpověď, kterou uvidíte na adrese /
-});
-
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
 // Připojení k MongoDB
 mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+}).then(() => {
+    console.log("MongoDB connected");
+}).catch(err => {
+    console.log("MongoDB connection error:", err);
 });
 
+// Schéma pro uložení výsledků
 const resultSchema = new mongoose.Schema({
     user: String,
     score: Number,
-    date: String,
+    date: Date
 });
 
 const Result = mongoose.model("Result", resultSchema);
@@ -33,9 +34,17 @@ app.post("/api/save-results", async (req, res) => {
     const { user, score, date } = req.body;
 
     try {
+        // Vytvoření nového výsledku
         const newResult = new Result({ user, score, date });
+
+        // Uložení výsledku do databáze
         await newResult.save();
-        res.status(200).send("Výsledky byly uloženy.");
+
+        // Odpověď s uloženým výsledkem
+        res.status(200).json({
+            message: "Výsledky byly uloženy.",
+            result: newResult // Vrátíme uložený výsledek
+        });
     } catch (error) {
         res.status(500).send("Chyba při ukládání výsledků.");
     }
