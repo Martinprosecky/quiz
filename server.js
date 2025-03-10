@@ -14,7 +14,6 @@ const express = require("express");
  mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
      .then(() => console.log("✅ MongoDB připojeno"))
      .catch(err => console.log("❌ Chyba při připojení k MongoDB:", err));
- mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
      useNewUrlParser: true,
      useUnifiedTopology: true
  }).then(() => {
