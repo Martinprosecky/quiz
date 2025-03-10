@@ -40,25 +40,25 @@ const Result = mongoose.model("Result", resultSchema);
 
 // Endpoint pro ukládání výsledků
 app.post("/api/save-results", async (req, res) => {
-    /*
-      Z těla požadavku de-structurujeme
-      user, score, date a answers.
-      "answers" je pole objektů:
-      [
-        {
-          questionId: "otazka1",
-          questionText: "Kolik je 2 + 2?",
-          userAnswer: "4",
-          isCorrect: true
-        },
-        ...
-      ]
-    */
-    const { user, score, date, answers } = req.body;
+    const { test_id, user, score, date, answers } = req.body;
+
+    // Pro logování dat přijatých z frontendu
+    console.log("Přijatá data:", req.body);
+
+    // Zkontroluj, zda všechny potřebné hodnoty existují
+    if (!test_id || !user || !score || !date || !answers) {
+        return res.status(400).send("Chybí některé požadované údaje.");
+    }
 
     try {
         // Vytvoření nového výsledku
-        const newResult = new Result({ user, score, date, answers });
+        const newResult = new Result({
+            test_id,
+            user,
+            score,
+            date,
+            answers
+        });
 
         // Uložení výsledku do databáze
         await newResult.save();
@@ -69,7 +69,9 @@ app.post("/api/save-results", async (req, res) => {
             result: newResult // Vrátíme uložený výsledek
         });
     } catch (error) {
+        // Logování chyb
         console.error("Chyba při ukládání výsledků:", error);
+
         res.status(500).send("Chyba při ukládání výsledků.");
     }
 });
