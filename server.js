@@ -11,83 +11,74 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Připojení k MongoDB
-mongoose.connect("mongodb+srv://proseckymarty2:Kackulicek123@quizCluster.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster", {
+mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB připojeno");
 }).catch(err => {
-    console.log("MongoDB connection error:", err);
+    console.error("❌ Chyba připojení k MongoDB:", err);
 });
 
-// Schéma pro uložení výsledků
-// Přidáváme pole "answers" pro ukládání odpovědí na otázky.
+// Definice schématu
 const resultSchema = new mongoose.Schema({
-    user: String,
-    score: Number,
-    date: Date,
-    answers: [
-      {
-        questionId: String,     // Identifikátor otázky nebo např. "Otázka 1"
-        questionText: String,   // Text otázky, pokud jej chcete ukládat
-        userAnswer: String,     // Co uživatel zadal
-        isCorrect: Boolean      // true/false podle vyhodnocení
-      }
-    ]
-});
+    answers: {
+        shapes: {
+            responses: Number,
+            correctResponses: Number
+        },
+        questions: [
+            {
+                questionId: String,
+                questionText: String,
+                userAnswer: String,
+                isCorrect: Boolean
+            }
+        ]
+    }
+}, { timestamps: true });
 
 const Result = mongoose.model("Result", resultSchema);
 
 // Endpoint pro ukládání výsledků
 app.post("/api/save-results", async (req, res) => {
-    const { test_id, user, score, date, answers } = req.body;
-
-    // Pro logování dat přijatých z frontendu
-    console.log("Přijatá data:", req.body);
-
-    // Zkontroluj, zda všechny potřebné hodnoty existují
-    if (!test_id || !user || !score || !date || !answers) {
-        return res.status(400).send("Chybí některé požadované údaje.");
-    }
-
     try {
-        // Vytvoření nového výsledku
+        const { responses, correctResponses, questions } = req.body;
+
         const newResult = new Result({
-            test_id,
-            user,
-            score,
-            date,
-            answers
+            answers: {
+                shapes: {
+                    responses,
+                    correctResponses
+                },
+                questions
+            }
         });
 
-        // Uložení výsledku do databáze
         await newResult.save();
 
-        // Odpověď s uloženým výsledkem
         res.status(200).json({
-            message: "Výsledky byly uloženy.",
-            result: newResult // Vrátíme uložený výsledek
+            message: "✅ Výsledek byl úspěšně uložen.",
+            result: newResult
         });
     } catch (error) {
-        // Logování chyb
-        console.error("Chyba při ukládání výsledků:", error);
-
+        console.error("❌ Chyba při ukládání výsledků:", error);
         res.status(500).send("Chyba při ukládání výsledků.");
     }
 });
 
-// Endpoint pro zobrazení výsledků
+// Endpoint pro načítání výsledků
 app.get("/api/results", async (req, res) => {
     try {
-        const results = await Result.find();
+        const results = await Result.find({}, "_id answers __v");
         res.status(200).json(results);
     } catch (error) {
-        console.error("Chyba při načítání výsledků:", error);
+        console.error("❌ Chyba při načítání výsledků:", error);
         res.status(500).send("Chyba při načítání výsledků.");
     }
 });
 
 // Spuštění serveru
 app.listen(port, () => {
-    console.log(`Server běží na http://localhost:${port}`);
+    console.log(`🚀 Server běží na http://localhost:${port}`);
 });
