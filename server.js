@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Připojení k MongoDB
-const mongoURI = process.env.MONGO_URI || "mongodb+srv://proseckymarty2:Kackulicek123@quizCluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster";
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster";
 
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
