@@ -10,7 +10,8 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const mongoURI = process.env.MONGO_URI || "mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster";
+// Připojení k MongoDB - připojení s URI
+const mongoURI = "mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster";
 
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
@@ -21,7 +22,7 @@ mongoose.connect(mongoURI, {
     console.error("❌ Chyba připojení k MongoDB:", err);
 });
 
-// Definice schématu pro výsledky
+// Definice schématu
 const resultSchema = new mongoose.Schema({
     answers: {
         shapes: {
