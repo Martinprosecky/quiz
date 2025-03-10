@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Připojení k MongoDB
-mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+mongoose.connect("mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -21,17 +21,17 @@ mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.ne
 });
 
 // Schéma pro uložení výsledků
-// Rozšířené o pole "answers" pro detailní záznam odpovědí
+// Přidáváme pole "answers" pro ukládání odpovědí na otázky.
 const resultSchema = new mongoose.Schema({
     user: String,
     score: Number,
     date: Date,
     answers: [
       {
-        questionId: String,     // např. "Q1"
-        questionText: String,   // text otázky
-        userAnswer: String,     // otevřená odpověď uživatele
-        isCorrect: Boolean      // příznak, zda je správně
+        questionId: String,     // Identifikátor otázky nebo např. "Otázka 1"
+        questionText: String,   // Text otázky, pokud jej chcete ukládat
+        userAnswer: String,     // Co uživatel zadal
+        isCorrect: Boolean      // true/false podle vyhodnocení
       }
     ]
 });
@@ -40,11 +40,24 @@ const Result = mongoose.model("Result", resultSchema);
 
 // Endpoint pro ukládání výsledků
 app.post("/api/save-results", async (req, res) => {
-    // Nově očekáváme "answers" v req.body
+    /*
+      Z těla požadavku de-structurujeme
+      user, score, date a answers.
+      "answers" je pole objektů:
+      [
+        {
+          questionId: "otazka1",
+          questionText: "Kolik je 2 + 2?",
+          userAnswer: "4",
+          isCorrect: true
+        },
+        ...
+      ]
+    */
     const { user, score, date, answers } = req.body;
 
     try {
-        // Vytvoření nového výsledku (s polem answers)
+        // Vytvoření nového výsledku
         const newResult = new Result({ user, score, date, answers });
 
         // Uložení výsledku do databáze
@@ -53,7 +66,7 @@ app.post("/api/save-results", async (req, res) => {
         // Odpověď s uloženým výsledkem
         res.status(200).json({
             message: "Výsledky byly uloženy.",
-            result: newResult
+            result: newResult // Vrátíme uložený výsledek
         });
     } catch (error) {
         console.error("Chyba při ukládání výsledků:", error);
