@@ -11,7 +11,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Připojení k MongoDB
-mongoose.connect("mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster", {
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.mongodb.net/?retryWrites=true&w=majority&appName=quizCluster";
+
+mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -20,7 +22,7 @@ mongoose.connect("mongodb+srv://proseckymarty2:Kackulicek123@quizcluster.esdbj.m
     console.error("❌ Chyba připojení k MongoDB:", err);
 });
 
-// Definice schématu
+// Definice schématu pro výsledky
 const resultSchema = new mongoose.Schema({
     answers: {
         shapes: {
