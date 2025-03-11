@@ -17,9 +17,17 @@ mongoose.connect("mongodb+srv://martin16:JebuTvojiMamu@cluster0.0fs4b.mongodb.ne
 
 // Schéma pro ukládání výsledků
 const resultSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        default: 3  // vždy uložíme 3
+    },
     user: String,
-    score: Number,
-    date: Date,
+    correctShapes: Number,
+    totalShapes: Number,
+    date: {
+        type: Date,
+        default: Date.now
+    },
     answers: [
         {
             questionId: String,     // např. "Q1"
@@ -34,11 +42,11 @@ const Result = mongoose.model("Result", resultSchema);
 
 // Endpoint pro ukládání výsledků
 app.post("/api/save-results", async (req, res) => {
-    const { user, score, date, answers } = req.body;
+    const { id, user, correctShapes, totalShapes, answers } = req.body;
 
     try {
         // Vytvoření a uložení výsledku
-        const newResult = new Result({ user, score, date, answers });
+        const newResult = new Result({ id, user, correctShapes, totalShapes, answers });
         await newResult.save();
 
         res.status(200).json({
