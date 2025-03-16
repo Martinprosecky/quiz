@@ -24,7 +24,6 @@ const resultSchema = new mongoose.Schema({
     user: String,
     totalpoints: Number,
     correctShapes: Number,
-    totalShapes: Number,
     date: {
         type: Date,
         default: Date.now
