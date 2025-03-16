@@ -22,7 +22,7 @@ const resultSchema = new mongoose.Schema({
         default: 3  // vždy uložíme 3
     },
     user: String,
-    totalPoints: Number,
+    totalpoints: Number,
     correctShapes: Number,
     totalShapes: Number,
     date: {
@@ -47,7 +47,7 @@ app.post("/api/save-results", async (req, res) => {
 
     try {
         // Vytvoření a uložení výsledku
-        const newResult = new Result({ id, user, correctShapes, totalShapes, answers });
+        const newResult = new Result({ id, user, totalpoints, correctShapes, totalShapes, answers });
         await newResult.save();
 
         res.status(200).json({
