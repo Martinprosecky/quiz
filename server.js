@@ -22,7 +22,7 @@ const resultSchema = new mongoose.Schema({
         default: 3  // vždy uložíme 3
     },
     user: String,
-    totalpoints: Number,
+    totalPoints: Number,
     correctShapes: Number,
     totalShapes: Number,
     date: {
