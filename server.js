@@ -43,7 +43,7 @@ const Result = mongoose.model("Result", resultSchema);
 
 // Endpoint pro ukládání výsledků
 app.post("/api/save-results", async (req, res) => {
-    const { id, user, correctShapes, totalShapes, answers } = req.body;
+    const { id, user, totalpoints, correctShapes, totalShapes, answers } = req.body;
 
     try {
         // Vytvoření a uložení výsledku
